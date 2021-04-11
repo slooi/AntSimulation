@@ -10,11 +10,14 @@ export default class ObjectManager {
     }
     createAnts(point: Point, num: number) {
         for (let i = 0; i < num; i++) {
-            const ant = new Ant(point);
+            const ant = new Ant(point, 0);
             this.ants.push(ant);
         }
     }
     update() {
         // Update objects
+        this.ants.forEach((ant) => {
+            ant.update();
+        });
     }
 }
