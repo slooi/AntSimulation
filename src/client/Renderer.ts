@@ -1,3 +1,5 @@
+import globalValues from "./globalValues";
+
 import vsource from "./glsl/vsource.glsl";
 import fsource from "./glsl/fsource.glsl";
 
@@ -13,8 +15,8 @@ export default class Renderer {
     constructor(canvas: HTMLCanvasElement) {
         this.verticesRendered = 0;
 
-        canvas.width = 500;
-        canvas.height = 500;
+        canvas.width = globalValues.canvas.width;
+        canvas.height = globalValues.canvas.height;
         this.canvas = canvas;
         const gl = canvas.getContext("webgl");
         if (!gl) {
@@ -103,7 +105,8 @@ export default class Renderer {
         gl.enableVertexAttribArray(attribLocations.a_ColorNSize);
 
         // uniform
-        gl.uniform1f(uniformLocations.u_DiaSize, 10);
+        gl.uniform1f(uniformLocations.u_DiaSize, globalValues.diaSize);
+        gl.uniform1f(uniformLocations.u_CanvasHalfSize, globalValues.canvas.width / 2);
 
         // draw
         gl.drawArrays(gl.POINTS, 0, this.data.length / 2);
@@ -121,10 +124,11 @@ export default class Renderer {
     addData(x: number, y: number, r: number, g: number, b: number, size: number) {
         this.float[this.verticesRendered * 3 + 0] = x;
         this.float[this.verticesRendered * 3 + 1] = y;
-        this.uint[this.verticesRendered * 12 + 8 + 0] = r;
-        this.uint[this.verticesRendered * 12 + 8 + 1] = g;
-        this.uint[this.verticesRendered * 12 + 8 + 2] = b;
-        this.uint[this.verticesRendered * 12 + 8 + 3] = size;
+        const pos = this.verticesRendered * 12 + 8;
+        this.uint[pos + 0] = r;
+        this.uint[pos + 1] = g;
+        this.uint[pos + 2] = b;
+        this.uint[pos + 3] = size;
 
         this.verticesRendered += 1;
     }
