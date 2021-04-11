@@ -6,7 +6,13 @@ export default class Renderer {
     gl: WebGLRenderingContext;
     data: number[];
     dataBuffer: WebGLBuffer;
+    offset: number;
+    buffer: ArrayBuffer;
+    float: Float32Array;
+    uint: Uint8Array;
     constructor(canvas: HTMLCanvasElement) {
+        this.offset = 0;
+
         canvas.width = 500;
         canvas.height = 500;
         this.canvas = canvas;
@@ -57,24 +63,24 @@ export default class Renderer {
             0.5,
         ];
 
-        const buffer = new ArrayBuffer(4 + 4 + 4);
-        const float = new Float32Array(buffer);
-        const uint = new Uint8Array(buffer);
+        this.buffer = new ArrayBuffer(4 + 4 + 4);
+        this.float = new Float32Array(this.buffer);
+        this.uint = new Uint8Array(this.buffer);
 
-        float[0] = 0.5; // 4 bytes
-        float[1] = 0.5; // 4 bytes
+        this.float[0] = 0.5; // 4 bytes
+        this.float[1] = 0.5; // 4 bytes
         // float[2] = 123123123123; // 4 bytes
-        console.log(float);
-        uint[2 * 4 + 0] = 0; // 1 byte
-        uint[2 * 4 + 1] = 255; // 1 byte
-        uint[2 * 4 + 2] = 255; // 1 byte
-        uint[2 * 4 + 3] = 255; // 1 byte
-        console.log(uint);
+        console.log(this.float);
+        this.uint[2 * 4 + 0] = 0; // 1 byte
+        this.uint[2 * 4 + 1] = 255; // 1 byte
+        this.uint[2 * 4 + 2] = 255; // 1 byte
+        this.uint[2 * 4 + 3] = 255; // 1 byte
+        console.log(this.uint);
 
         // buffer
         this.dataBuffer = buildBuffer(gl);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.dataBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, float, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, this.float, gl.STATIC_DRAW);
 
         // pointer
         gl.vertexAttribPointer(
@@ -87,14 +93,14 @@ export default class Renderer {
         );
         gl.enableVertexAttribArray(attribLocations.a_Position);
         gl.vertexAttribPointer(
-            attribLocations.a_Color,
+            attribLocations.a_ColorNSize,
             4,
             gl.UNSIGNED_BYTE,
             false,
             Uint8Array.BYTES_PER_ELEMENT * 12,
             Uint8Array.BYTES_PER_ELEMENT * 8
         );
-        gl.enableVertexAttribArray(attribLocations.a_Color);
+        gl.enableVertexAttribArray(attribLocations.a_ColorNSize);
 
         // draw
         gl.drawArrays(gl.POINTS, 0, this.data.length / 2);
@@ -103,8 +109,26 @@ export default class Renderer {
 
         // framebuffer
     }
-    render(data: number) {}
-    setup() {}
+    resetBuffer(byteSize: number) {
+        this.buffer = new ArrayBuffer(byteSize);
+        this.float = new Float32Array(this.buffer);
+        this.uint = new Uint8Array(this.buffer);
+        this.offset = 0;
+    }
+    addData(x: number, y: number, r: number, g: number, b: number, size: number) {
+        this.float[this.offset] = x;
+        this.float[this.offset + 4] = y;
+        this.float[this.offset + 8] = r;
+        this.float[this.offset + 9] = g;
+        this.float[this.offset + 10] = b;
+        this.float[this.offset + 11] = size;
+
+        this.offset += 12;
+    }
+    render() {
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        this.gl.drawArrays(this.gl.POINTS, 0, this.offset / 12);
+    }
 }
 
 /* 
