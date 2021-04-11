@@ -1,0 +1,44 @@
+renderer
+	- stores position of ant into buffer
+		- this val is gradually decreased following the same rate
+		as the particles which disappear from the grid
+
+OnjectManager? <= NO	
+
+player
+	- places down food
+	- places down ants
+
+
+
+grid
+	- stores pheromones
+	- stores quick ant refs
+	- food
+	- walls
+
+visual info
+	- ants			- white
+	- pheromones	- green/red
+	- food			- light green
+	- walls			- lighter grey
+	- nest			- multiple points
+	- background	- black/dark grey
+	=> renderer must handle colors too
+
+Flow of information:
+	- renderer
+		- call func and pass info through that func
+			- THIS ONE.
+		- renderer has info on initalisation and renderers it
+		
+
+
+
+
+
+Neural netork
+	- Remember, you can add inputs into the neural network to
+	affect its behaviour
+		- You can calculate some stuff for them to promote behaviours
+		they exhibits at certain situations.
