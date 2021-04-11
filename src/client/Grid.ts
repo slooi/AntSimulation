@@ -13,10 +13,17 @@ export default class Grid {
     width: number;
     height: number;
     grid: Cell[][];
-    constructor(widthHeight: WidthHeight) {
+    cellWidth: number;
+    cellHeight: number;
+    constructor(widthHeight: WidthHeight, cellWidthHeight: WidthHeight) {
         this.width = widthHeight.width;
         this.height = widthHeight.height;
-        this.grid = createGrid(widthHeight, { width: 10, height: 10 });
+        this.cellWidth = cellWidthHeight.width;
+        this.cellHeight = cellWidthHeight.height;
+        this.grid = createGrid(widthHeight, { width: this.cellWidth, height: this.cellHeight });
+    }
+    getNumberOfCells() {
+        return (this.width / this.cellWidth) * (this.height / this.cellHeight);
     }
 }
 

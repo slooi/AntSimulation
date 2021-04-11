@@ -8,7 +8,7 @@ export default class ObjectManager {
     renderer: Renderer;
     constructor(widthHeight: WidthHeight, renderer: Renderer) {
         this.ants = [];
-        this.grid = new Grid(widthHeight);
+        this.grid = new Grid(widthHeight, { width: 10, height: 10 });
         this.renderer = renderer;
     }
     createAnts(point: Point, num: number) {
@@ -23,4 +23,9 @@ export default class ObjectManager {
             ant.update();
         });
     }
+    getNumberOfCells() {
+        return this.grid.getNumberOfCells();
+    }
+
+    // !@#!@#!@#!#@ REMEMBER, JUST GET THE GRIDS TO RENDER
 }
