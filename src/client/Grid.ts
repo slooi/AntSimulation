@@ -15,15 +15,35 @@ export default class Grid {
     grid: Cell[][];
     cellWidth: number;
     cellHeight: number;
+    numCellsX: number;
+    numCellsY: number;
     constructor(widthHeight: WidthHeight, cellWidthHeight: WidthHeight) {
         this.width = widthHeight.width;
         this.height = widthHeight.height;
+        this.numCellsX = this.width / cellWidthHeight.width;
+        this.numCellsY = this.height / cellWidthHeight.height;
         this.cellWidth = cellWidthHeight.width;
         this.cellHeight = cellWidthHeight.height;
         this.grid = createGrid(widthHeight, { width: this.cellWidth, height: this.cellHeight });
     }
     getNumberOfCells() {
         return (this.width / this.cellWidth) * (this.height / this.cellHeight);
+    }
+    forEachRender(
+        func: (x: number, y: number, r: number, g: number, b: number, size: number) => void
+    ) {
+        for (let y = 0; y < this.numCellsY; y++) {
+            for (let x = 0; x < this.numCellsX; x++) {
+                func(
+                    x * this.cellWidth + this.cellWidth * 0.5 - this.width / 2,
+                    -y * this.cellHeight - this.cellHeight * 0.5 + this.height / 2,
+                    Math.random() * 255,
+                    Math.random() * 255,
+                    Math.random() * 255,
+                    255
+                ); //!@#!@#!@# hardcoded
+            }
+        }
     }
 }
 
