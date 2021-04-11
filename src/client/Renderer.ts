@@ -6,15 +6,15 @@ export default class Renderer {
     gl: WebGLRenderingContext;
     data: number[];
     dataBuffer: WebGLBuffer;
-    offset: number;
+    verticesRendered: number;
     buffer: ArrayBuffer;
     float: Float32Array;
     uint: Uint8Array;
     constructor(canvas: HTMLCanvasElement) {
-        this.offset = 0;
+        this.verticesRendered = 0;
 
-        canvas.width = 500;
-        canvas.height = 500;
+        canvas.width = 100;
+        canvas.height = 100;
         this.canvas = canvas;
         const gl = canvas.getContext("webgl");
         if (!gl) {
@@ -24,7 +24,7 @@ export default class Renderer {
 
         // viewport
         gl.viewport(0, 0, canvas.width, canvas.height);
-        gl.clearColor(1, 0, 0, 1);
+        gl.clearColor(0.1, 0.1, 0.1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         // programs
@@ -96,7 +96,7 @@ export default class Renderer {
             attribLocations.a_ColorNSize,
             4,
             gl.UNSIGNED_BYTE,
-            false,
+            true,
             Uint8Array.BYTES_PER_ELEMENT * 12,
             Uint8Array.BYTES_PER_ELEMENT * 8
         );
@@ -110,24 +110,27 @@ export default class Renderer {
         // framebuffer
     }
     resetBuffer(vertices: number) {
-        this.buffer = new ArrayBuffer(vertices * 12);
+        this.buffer = new ArrayBuffer(vertices * 12); //!@#!@#
         this.float = new Float32Array(this.buffer);
         this.uint = new Uint8Array(this.buffer);
-        this.offset = 0;
+        this.verticesRendered = 0;
     }
     addData(x: number, y: number, r: number, g: number, b: number, size: number) {
-        this.float[this.offset] = x;
-        this.float[this.offset + 4] = y;
-        this.float[this.offset + 8] = r;
-        this.float[this.offset + 9] = g;
-        this.float[this.offset + 10] = b;
-        this.float[this.offset + 11] = size;
+        this.float[this.verticesRendered * 3 + 0] = x;
+        this.float[this.verticesRendered * 3 + 1] = y;
+        this.uint[this.verticesRendered * 12 + 8 + 0] = r;
+        this.uint[this.verticesRendered * 12 + 8 + 1] = g;
+        this.uint[this.verticesRendered * 12 + 8 + 2] = b;
+        this.uint[this.verticesRendered * 12 + 8 + 3] = size;
 
-        this.offset += 12;
+        this.verticesRendered += 1;
+    }
+    clear() {
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     }
     render() {
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-        this.gl.drawArrays(this.gl.POINTS, 0, this.offset / 12);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.float, this.gl.STATIC_DRAW);
+        this.gl.drawArrays(this.gl.POINTS, 0, this.verticesRendered);
     }
 }
 
