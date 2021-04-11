@@ -8,13 +8,6 @@ Purpose:
 ######## TYPES ##########
 */
 
-type Cell = {
-    food: number;
-    ants: Ant[];
-    pheromones: number;
-    isWall: boolean;
-};
-
 type GameDependencies = {
     canvas: HTMLCanvasElement;
 };
