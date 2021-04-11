@@ -14,4 +14,7 @@ export default class ObjectManager {
             this.ants.push(ant);
         }
     }
+    update() {
+        // Update objects
+    }
 }
