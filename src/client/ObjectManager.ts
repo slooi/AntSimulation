@@ -1,13 +1,17 @@
 import Ant from "./Ant";
+import Grid from "./Grid";
 
 export default class ObjectManager {
     ants: Ant[];
-    constructor() {
+    grid: Grid;
+    constructor(widthHeight: WidthHeight) {
         this.ants = [];
+        this.grid = new Grid(widthHeight);
     }
     createAnts(point: Point, num: number) {
         for (let i = 0; i < num; i++) {
-            this.ants.push(new Ant(point));
+            const ant = new Ant(point);
+            this.ants.push(ant);
         }
     }
 }
