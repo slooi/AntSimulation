@@ -13,8 +13,8 @@ export default class Renderer {
     constructor(canvas: HTMLCanvasElement) {
         this.verticesRendered = 0;
 
-        canvas.width = 100;
-        canvas.height = 100;
+        canvas.width = 500;
+        canvas.height = 500;
         this.canvas = canvas;
         const gl = canvas.getContext("webgl");
         if (!gl) {
