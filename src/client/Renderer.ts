@@ -102,6 +102,9 @@ export default class Renderer {
         );
         gl.enableVertexAttribArray(attribLocations.a_ColorNSize);
 
+        // uniform
+        gl.uniform1f(uniformLocations.u_DiaSize, 10);
+
         // draw
         gl.drawArrays(gl.POINTS, 0, this.data.length / 2);
 
