@@ -23,6 +23,13 @@ export default class ObjectManager {
             ant.update();
         });
     }
+    render() {
+        this.grid.forEachRender(
+            (x: number, y: number, r: number, g: number, b: number, size: number) => {
+                this.renderer.addData(x, y, r, g, b, size);
+            }
+        );
+    }
     getNumberOfCells() {
         return this.grid.getNumberOfCells();
     }
