@@ -1,10 +1,12 @@
 export default class Ant {
-    x: any;
-    y: any;
+    x: number;
+    y: number;
+    dir: number;
     hasFood: boolean;
-    constructor({ x, y }: Point) {
+    constructor({ x, y }: Point, dir: number) {
         this.x = x;
         this.y = y;
+        this.dir = dir;
         this.hasFood = false;
     }
     update() {}
