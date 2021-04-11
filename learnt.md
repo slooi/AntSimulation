@@ -63,3 +63,15 @@ gl.vertexAttribPointer(
 );
 gl.enable
 ```
+
+-   If you are tightly packing data, REMEMBER that the index is DEPENDENT on the \_\_\_typedArray.
+
+```
+this.float[this.verticesRendered * 3 + 0] = x;		<= this.float's indices are each 32bits/4bytes
+this.float[this.verticesRendered * 3 + 1] = y;
+this.uint[this.verticesRendered * 12 + 8 + 0] = r;		<= this.uint's indices are each 8bits/1byte
+this.uint[this.verticesRendered * 12 + 8 + 1] = g;
+this.uint[this.verticesRendered * 12 + 8 + 2] = b;
+this.uint[this.verticesRendered * 12 + 8 + 3] = size;
+this.verticesRendered++
+```
