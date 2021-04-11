@@ -5,8 +5,11 @@ export default class Game {
     renderer: Renderer;
     objectManager: ObjectManager;
     constructor({ canvas }: GameDependencies) {
-        this.objectManager = new ObjectManager({ width: canvas.width, height: canvas.height });
         this.renderer = new Renderer(canvas);
+        this.objectManager = new ObjectManager(
+            { width: canvas.width, height: canvas.height },
+            this.renderer
+        );
         this.loopInitialiser();
     }
 
