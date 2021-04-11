@@ -6,7 +6,7 @@ Each cell of the grid wil have these properties:
 NOT colony
 
 */
-
+import globalValues from "./globalValues";
 import Ant from "./Ant";
 
 export default class Grid {
@@ -17,13 +17,13 @@ export default class Grid {
     cellHeight: number;
     numCellsX: number;
     numCellsY: number;
-    constructor(widthHeight: WidthHeight, cellWidthHeight: WidthHeight) {
+    constructor(widthHeight: WidthHeight) {
         this.width = widthHeight.width;
         this.height = widthHeight.height;
-        this.numCellsX = this.width / cellWidthHeight.width;
-        this.numCellsY = this.height / cellWidthHeight.height;
-        this.cellWidth = cellWidthHeight.width;
-        this.cellHeight = cellWidthHeight.height;
+        this.numCellsX = this.width / globalValues.diaSize;
+        this.numCellsY = this.height / globalValues.diaSize;
+        this.cellWidth = globalValues.diaSize;
+        this.cellHeight = globalValues.diaSize;
         this.grid = createGrid(widthHeight, { width: this.cellWidth, height: this.cellHeight });
     }
     getNumberOfCells() {
