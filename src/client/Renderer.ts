@@ -109,8 +109,8 @@ export default class Renderer {
 
         // framebuffer
     }
-    resetBuffer(byteSize: number) {
-        this.buffer = new ArrayBuffer(byteSize);
+    resetBuffer(vertices: number) {
+        this.buffer = new ArrayBuffer(vertices * 12);
         this.float = new Float32Array(this.buffer);
         this.uint = new Uint8Array(this.buffer);
         this.offset = 0;

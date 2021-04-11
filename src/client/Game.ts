@@ -15,6 +15,7 @@ export default class Game {
 
     loopInitialiser() {
         const loop = () => {
+            this.renderer.resetBuffer(this.objectManager.getNumberOfCells());
             console.log(10);
             // requestAnimationFrame(loop);
         };
