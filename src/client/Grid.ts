@@ -16,7 +16,7 @@ export default class Grid {
     constructor(widthHeight: WidthHeight) {
         this.width = widthHeight.width;
         this.height = widthHeight.height;
-        this.grid = new Array();
+        this.grid = createGrid(widthHeight, { width: 10, height: 10 });
     }
 }
 
