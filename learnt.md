@@ -75,3 +75,16 @@ this.uint[this.verticesRendered * 12 + 8 + 2] = b;
 this.uint[this.verticesRendered * 12 + 8 + 3] = size;
 this.verticesRendered++
 ```
+
+-   If you are using a NON-FLOAT, make sure to turn normalization ON. Else you get weird results!
+
+```
+gl.vertexAttribPointer(
+	attribLocations.a_ColorNSize,
+	4,
+	gl.UNSIGNED_BYTE,
+	true,
+	Uint8Array.BYTES_PER_ELEMENT * 12,
+	Uint8Array.BYTES_PER_ELEMENT * 8
+);
+```
