@@ -35,8 +35,8 @@ export default class Grid {
         for (let y = 0; y < this.numCellsY; y++) {
             for (let x = 0; x < this.numCellsX; x++) {
                 func(
-                    x * this.cellWidth + this.cellWidth * 0.5 - this.width / 2,
-                    -y * this.cellHeight - this.cellHeight * 0.5 + this.height / 2,
+                    x * this.cellWidth + this.cellWidth * 0.5,
+                    y * this.cellHeight + this.cellHeight * 0.5,
                     Math.random() * 255,
                     Math.random() * 255,
                     Math.random() * 255,
