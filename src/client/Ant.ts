@@ -2,6 +2,8 @@ import Grid from "./Grid";
 import Cell from "./Cell";
 import globalValues from "./globalValues";
 
+const numOfDirections = 24;
+
 export default class Ant {
     x: number;
     y: number;
@@ -12,13 +14,13 @@ export default class Ant {
     parentCell: Cell;
     oldX: number;
     oldY: number;
-    constructor(grid: Grid, { x, y }: Point, dir: number) {
+    constructor(grid: Grid, { x, y }: Point) {
         this.x = x;
         this.y = y;
         this.oldX = this.x;
         this.oldY = this.y;
         this.grid = grid;
-        this.dir = Math.random() * 24; //!@#!@#!@#
+        this.dir = Math.random() * numOfDirections; //!@#!@#!@#
         this.speed = globalValues.diaSize;
         this.hasFood = false;
         const parentCell = this.grid.getCell(this.x, this.y);
@@ -33,7 +35,7 @@ export default class Ant {
         this.oldX = this.x;
         this.oldY = this.y;
 
-        // this.dir += Math.PI * 2 * Math.random();
+        // this.dir += (-2 / 180) * Math.PI + (4 / 180) * Math.PI * Math.random();
         // this.x += this.speed * Math.cos(this.dir);
         // this.y += this.speed * Math.sin(this.dir);
 
@@ -41,9 +43,9 @@ export default class Ant {
             this.dir += 1 + Math.random() * -2;
         }
         if (this.dir < 0) {
-            this.dir = 24 + this.dir;
+            this.dir = numOfDirections + this.dir;
         } else {
-            this.dir %= 24;
+            this.dir %= numOfDirections;
         }
         this.x += this.speed * angleXY[~~this.dir][0];
         this.y += this.speed * angleXY[~~this.dir][1];
@@ -56,8 +58,8 @@ export default class Ant {
             this.y = this.oldY;
 
             // this.dir += 3.1416;
-            this.dir += 12;
-            this.dir %= 24;
+            this.dir += numOfDirections * 0.5;
+            this.dir %= numOfDirections;
         } else {
             // Inside grid
             if (newCell !== this.parentCell) {
@@ -67,8 +69,19 @@ export default class Ant {
                 // replace old parentCell and update new parentCell
                 this.parentCell = newCell;
                 this.parentCell.addAnt();
+
+                /* NOTE THIS WILL CAUSE PROBLEMS (only initially/if the map is only 1 pixel which it wouldn't be) */
+                /* - if the nest is made on food the food won't be collected until later */
+                /* Nah, it's fine */
+                if (!this.hasFood) {
+                    this.hasFood = this.parentCell.hasFood();
+                    if (this.hasFood) {
+                        this.parentCell.takeFood();
+                    }
+                }
             }
         }
+        this.parentCell.addPheromones();
     }
 }
 
