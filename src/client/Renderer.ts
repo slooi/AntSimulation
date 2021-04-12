@@ -118,7 +118,7 @@ export default class Renderer {
     setBuffer(vertices: number) {
         this.buffer = new ArrayBuffer(vertices * 12); //!@#!@#
     }
-    resetBuffer(vertices: number) {
+    resetBuffer() {
         // this.buffer = new ArrayBuffer(vertices * 12); //!@#!@#
         this.float = new Float32Array(this.buffer);
         this.uint = new Uint8Array(this.buffer);
