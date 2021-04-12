@@ -72,12 +72,12 @@ export default class Renderer {
         this.float[0] = 0.5; // 4 bytes
         this.float[1] = 0.5; // 4 bytes
         // float[2] = 123123123123; // 4 bytes
-        console.log(this.float);
+        // console.log(this.float);
         this.uint[2 * 4 + 0] = 0; // 1 byte
         this.uint[2 * 4 + 1] = 255; // 1 byte
         this.uint[2 * 4 + 2] = 255; // 1 byte
         this.uint[2 * 4 + 3] = 255; // 1 byte
-        console.log(this.uint);
+        // console.log(this.uint);
 
         // buffer
         this.dataBuffer = buildBuffer(gl);
@@ -115,8 +115,11 @@ export default class Renderer {
 
         // framebuffer
     }
-    resetBuffer(vertices: number) {
+    setBuffer(vertices: number) {
         this.buffer = new ArrayBuffer(vertices * 12); //!@#!@#
+    }
+    resetBuffer(vertices: number) {
+        // this.buffer = new ArrayBuffer(vertices * 12); //!@#!@#
         this.float = new Float32Array(this.buffer);
         this.uint = new Uint8Array(this.buffer);
         this.verticesRendered = 0;
