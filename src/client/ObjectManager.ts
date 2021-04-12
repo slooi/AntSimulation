@@ -1,6 +1,7 @@
 import Ant from "./Ant";
 import Grid from "./Grid";
 import Renderer from "./Renderer";
+import globalValues from "./globalValues";
 
 export default class ObjectManager {
     ants: Ant[];
@@ -10,7 +11,10 @@ export default class ObjectManager {
         this.ants = [];
         this.grid = new Grid(widthHeight);
         this.renderer = renderer;
-        this.createAnts({ x: 250, y: 250 }, 100000);
+        this.createAnts(
+            { x: globalValues.canvas.width * 0.5, y: globalValues.canvas.height * 0.5 },
+            20000
+        );
     }
     createAnts(point: Point, num: number) {
         for (let i = 0; i < num; i++) {
