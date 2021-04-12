@@ -8,6 +8,7 @@ NOT colony
 */
 import globalValues from "./globalValues";
 import Ant from "./Ant";
+import Cell from "./Cell";
 
 export default class Grid {
     width: number;
@@ -34,16 +35,40 @@ export default class Grid {
     ) {
         for (let y = 0; y < this.numCellsY; y++) {
             for (let x = 0; x < this.numCellsX; x++) {
-                func(
-                    x * this.cellWidth + this.cellWidth * 0.5,
-                    y * this.cellHeight + this.cellHeight * 0.5,
-                    Math.random() * 255,
-                    Math.random() * 255,
-                    Math.random() * 255,
-                    255
-                ); //!@#!@#!@# hardcoded
+                const cell = this.grid[y][x];
+                // prettier-ignore
+                if (cell.isWall){
+					func(
+						cell.x, 
+						cell.y, 
+						0.8,
+						0.8,
+						0.8,
+						255
+					); //!@#!@#!@# hardcoded
+				}else{
+					func(
+						cell.x, 
+						cell.y, 
+						(cell.hasAnt() as unknown as number)*255, 
+						cell.food, 
+						(cell.pheromones as unknown as number) * 255, 
+						255
+					); //!@#!@#!@# hardcoded
+				}
             }
         }
+    }
+    getCell(x: number, y: number) {
+        // Converts x and y positions into cell index x and y
+
+        const xIndex = Math.floor(x / this.cellWidth);
+        const yIndex = Math.floor(y / this.cellHeight);
+
+        if (xIndex < 0 || yIndex < 0 || xIndex >= this.numCellsX || yIndex >= this.numCellsY) {
+            throw new Error("ERROR: getCell, x and y arguments are outside grid!");
+        }
+        return this.grid[yIndex][xIndex];
     }
 }
 
@@ -57,27 +82,24 @@ function createGrid({ width, height }: WidthHeight, cellWidthHeight: WidthHeight
     }
 
     // Create grid
-    // prettier-ignore
-    const grid = new Array(height / cellWidthHeight.height)
-        .fill(0)
-        .map(
-			(val) => new Array(width / cellWidthHeight.width).fill(0).map(
-				(val) => new Cell()
-			)
-		);
+    const numCellsX = width / cellWidthHeight.width;
+    const numCellsY = height / cellWidthHeight.height;
+    const cellWidth = cellWidthHeight.width;
+    const cellHeight = cellWidthHeight.height;
+
+    const grid: Cell[][] = new Array(numCellsY).fill(0);
+    for (let y = 0; y < numCellsY; y++) {
+        grid[y] = new Array(numCellsX);
+        for (let x = 0; x < numCellsX; x++) {
+            const xPos = x * cellWidth + cellWidth * 0.5;
+            const yPos = y * cellHeight + cellHeight * 0.5;
+            grid[y][x] = new Cell(xPos, yPos);
+        }
+    }
+
+    // const grid = new Array(height / cellWidthHeight.height)
+    //     .fill(0)
+    //     .map((val) => new Array(width / cellWidthHeight.width).fill(0).map((val) => new Cell()));
 
     return grid;
-}
-
-class Cell {
-    food: number;
-    ants: Ant[];
-    pheromones: number;
-    isWall: boolean;
-    constructor() {
-        this.food = 0;
-        this.ants = [];
-        this.pheromones = 0;
-        this.isWall = false;
-    }
 }
