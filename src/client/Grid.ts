@@ -59,14 +59,19 @@ export default class Grid {
             }
         }
     }
-    getCell(x: number, y: number) {
+    getCell(x: number, y: number): Cell | -1 {
         // Converts x and y positions into cell index x and y
+        /* 
+			RETURNS:
+				-1 => outside grid
+				Cell => cell ant is inside
+		*/
 
         const xIndex = Math.floor(x / this.cellWidth);
         const yIndex = Math.floor(y / this.cellHeight);
 
         if (xIndex < 0 || yIndex < 0 || xIndex >= this.numCellsX || yIndex >= this.numCellsY) {
-            throw new Error("ERROR: getCell, x and y arguments are outside grid!");
+            return -1;
         }
         return this.grid[yIndex][xIndex];
     }
