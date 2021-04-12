@@ -42,3 +42,29 @@ Neural netork
 	affect its behaviour
 		- You can calculate some stuff for them to promote behaviours
 		they exhibits at certain situations.
+
+
+
+To make food collision more efficient:
+	- Check if
+	- more work!
+
+	On initlisation / localenvironment changes
+	- each food checks if it's any of its neighbours are not food  
+		- if food disappears update surrounding blocks if they're food. Cus they're next
+	- WILL NOT WORK IF FOOD HAS MORE SURFACE AREA THAN NUMBER OF ANTS!
+		- Thus I will jst go the easy route and have each ant check if they're touching food
+
+Alternative
+	- Each ant checks if touching food
+
+Alternative
+	- Each cell in current frame gets pushed to array. This arrary
+
+	MAKE SURE ANTS DON'T DUPLICATE FOOD!
+
+
+
+
+
+`ObjectManager` is more like something that handles the entities/objects of the game.
