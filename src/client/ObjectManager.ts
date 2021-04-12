@@ -10,18 +10,19 @@ export default class ObjectManager {
         this.ants = [];
         this.grid = new Grid(widthHeight);
         this.renderer = renderer;
+        this.createAnts({ x: 250, y: 250 }, 100000);
     }
     createAnts(point: Point, num: number) {
         for (let i = 0; i < num; i++) {
-            const ant = new Ant(point, 0);
-            this.ants.push(ant);
+            const ant = new Ant(this.grid, point, 0);
+            this.ants[i] = ant;
         }
     }
     update() {
         // Update objects
-        this.ants.forEach((ant) => {
-            ant.update();
-        });
+        for (let i = 0; i < this.ants.length; i++) {
+            this.ants[i].update();
+        }
     }
     render() {
         this.grid.forEachRender(
