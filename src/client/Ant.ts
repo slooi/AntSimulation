@@ -20,7 +20,7 @@ export default class Ant {
         this.oldX = this.x;
         this.oldY = this.y;
         this.grid = grid;
-        this.dir = Math.random() * numOfDirections; //!@#!@#!@#
+        this.dir = Math.random() * 2 * Math.PI; //!@#!@#!@#
         this.speed = globalValues.diaSize;
         this.hasFood = false;
         const parentCell = this.grid.getCell(this.x, this.y);
@@ -35,20 +35,20 @@ export default class Ant {
         this.oldX = this.x;
         this.oldY = this.y;
 
-        // this.dir += (-2 / 180) * Math.PI + (4 / 180) * Math.PI * Math.random();
-        // this.x += this.speed * Math.cos(this.dir);
-        // this.y += this.speed * Math.sin(this.dir);
+        this.dir += (-2 / 180) * Math.PI + (4 / 180) * Math.PI * Math.random();
+        this.x += this.speed * Math.cos(this.dir);
+        this.y += this.speed * Math.sin(this.dir);
 
-        if (Math.random() > 0.9) {
-            this.dir += 1 + Math.random() * -2;
-        }
-        if (this.dir < 0) {
-            this.dir = numOfDirections + this.dir;
-        } else {
-            this.dir %= numOfDirections;
-        }
-        this.x += this.speed * angleXY[~~this.dir][0];
-        this.y += this.speed * angleXY[~~this.dir][1];
+        // if (Math.random() > 0.9) {
+        //     this.dir += 1 + Math.random() * -2;
+        // }
+        // if (this.dir < 0) {
+        //     this.dir = numOfDirections + this.dir;
+        // } else {
+        //     this.dir %= numOfDirections;
+        // }
+        // this.x += this.speed * angleXY[~~this.dir][0];
+        // this.y += this.speed * angleXY[~~this.dir][1];
 
         // renders info into grid
         const newCell = this.grid.getCell(this.x, this.y);
@@ -57,9 +57,9 @@ export default class Ant {
             this.x = this.oldX;
             this.y = this.oldY;
 
-            // this.dir += 3.1416;
-            this.dir += numOfDirections * 0.5;
-            this.dir %= numOfDirections;
+            this.dir += 3.1416;
+            // this.dir += numOfDirections * 0.5;
+            // this.dir %= numOfDirections;
         } else {
             // Inside grid
             if (newCell !== this.parentCell) {
