@@ -52,7 +52,7 @@ export default class Grid {
 						cell.y, 
 						(cell.hasAnt() as unknown as number)*255, 
 						cell.food, 
-						(cell.pheromones as unknown as number) * 255, 
+						(cell.pheromones as unknown as number), 
 						255
 					); //!@#!@#!@# hardcoded
 				}
@@ -98,7 +98,12 @@ function createGrid({ width, height }: WidthHeight, cellWidthHeight: WidthHeight
         for (let x = 0; x < numCellsX; x++) {
             const xPos = x * cellWidth + cellWidth * 0.5;
             const yPos = y * cellHeight + cellHeight * 0.5;
-            grid[y][x] = new Cell(xPos, yPos);
+
+            if (x > 500 && y > 600 && x < 510 && y < 610) {
+                grid[y][x] = new Cell(xPos, yPos, 255);
+            } else {
+                grid[y][x] = new Cell(xPos, yPos, 0);
+            }
         }
     }
 
