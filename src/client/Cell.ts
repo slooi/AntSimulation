@@ -5,10 +5,10 @@ export default class Cell {
     pheromones: number; // 0 => 255
     isWall: boolean;
     numOfAnts: number;
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, food: number) {
         this.x = x;
         this.y = y;
-        this.food = 0;
+        this.food = food;
         this.pheromones = 0;
         this.isWall = false;
         this.numOfAnts = 0;
@@ -34,7 +34,7 @@ export default class Cell {
     }
 
     addPheromones() {
-        this.pheromones += 10;
+        this.pheromones += 1;
         if (this.pheromones > 255) {
             this.pheromones = 255;
         }
@@ -42,6 +42,15 @@ export default class Cell {
     reducePheromones() {
         if (this.pheromones > 0) {
             this.pheromones--;
+        }
+    }
+    hasFood() {
+        return this.food > 0;
+    }
+    takeFood() {
+        this.food -= 5;
+        if (this.food < 0) {
+            throw new Error("ERROR: Cell somehow has negative food!");
         }
     }
 }
