@@ -1,5 +1,5 @@
 const globalValues = {
-    diaSize: 2,
+    diaSize: 1,
     canvas: {
         width: 700,
         height: 700,
