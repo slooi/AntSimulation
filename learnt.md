@@ -88,3 +88,7 @@ gl.vertexAttribPointer(
 	Uint8Array.BYTES_PER_ELEMENT * 8
 );
 ```
+
+## EFFICIENCY
+
+-   Use pre-calculated lengths for cos and sin. Saved like 2-5? fps for this sim
