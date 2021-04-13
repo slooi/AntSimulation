@@ -4,7 +4,9 @@ import Renderer from "./Renderer";
 export default class Game {
     renderer: Renderer;
     objectManager: ObjectManager;
+    speed: number;
     constructor({ canvas }: GameDependencies) {
+        this.speed = 1;
         this.renderer = new Renderer(canvas);
         this.objectManager = new ObjectManager(
             { width: canvas.width, height: canvas.height },
@@ -25,7 +27,9 @@ export default class Game {
             }
             this.renderer.clear();
             this.renderer.resetBuffer();
-            this.objectManager.update();
+            for (let i = 0; i < this.speed; i++) {
+                this.objectManager.update();
+            }
             this.objectManager.render();
             this.renderer.render();
             fps++;
