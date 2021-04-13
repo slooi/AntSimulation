@@ -68,3 +68,70 @@ Alternative
 
 
 `ObjectManager` is more like something that handles the entities/objects of the game.
+
+
+
+## Implementing neighbouring front cell selection
+`
+[
+ 0 1 2
+ 3 x 4
+ 5 6 7
+]
+
+
+0 is [-1,-1] => [-1,0], [0,-1]
+2 is [1,-1] => [1,0], [0,1] => set one side to 0 then set the other side to 0
+
+1 is [0,-1] => [-1,-1], [1,-1] => which ever one is 0 is changed to -1 and +1
+3 is [-1,0] => [-1,-1], [-1,1] =>
+`
+
+
+
+
+
+## Planing on how to make ant choose which action based on the three pheromones in front of it and how to
+make it efficient
+
+
+
+
+
+- high concentration of pheromones decrease wandering
+	- Math.random < 10/(10+total pheromones)
+		- wander
+	- else don't follow a trail
+
+science paper foraging: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4060675/
+
+
+
+
+If has 0 pheromones front three blocks (-1 && -1 && -1)
+	=> just wander randomly
+If not wandering:
+	If 1 pheromone path infront 
+		- go down that path <= BUT HOW TO IMPLEMENTN (is it right turn, left turn, or just keep moving?)
+	if 2
+		- randomly pick one with high probability of choosing the the highest contributor
+	if 3
+		- randomly pick one with higher probability of choosing the highest contributor
+
+const ran = Math.random()*totalPheromones
+ran<[0]
+ran>[2]
+else:[1]
+
+testing:
+[0] = 1
+[1] = 1
+[2] = 1
+
+ran = 0.3*3
+=> 0.9
+[0]
+
+ran = 0.6*3
+=> 1.8
+=> [1]
