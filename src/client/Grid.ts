@@ -52,8 +52,8 @@ export default class Grid {
 						cell.y, 
 						(cell.hasAnt() as unknown as number)*255, 
 						cell.food, 
-						(cell.pheromones as unknown as number), 
-						255
+						(cell.pheromones[0] as unknown as number), 
+						(cell.pheromones[1] as unknown as number)
 					); //!@#!@#!@# hardcoded
 				}
             }
@@ -67,14 +67,25 @@ export default class Grid {
 				Cell => cell ant is inside
 		*/
 
-        const xIndex = Math.floor(x / this.cellWidth);
-        const yIndex = Math.floor(y / this.cellHeight);
-
+        const [xIndex, yIndex] = this.getPotentialIndices(x, y);
         if (xIndex < 0 || yIndex < 0 || xIndex >= this.numCellsX || yIndex >= this.numCellsY) {
             return -1;
         }
         return this.grid[yIndex][xIndex];
     }
+    getPotentialIndices(x: number, y: number): [number, number] {
+        return [Math.floor(x / this.cellWidth), Math.floor(y / this.cellHeight)];
+    }
+    getCellFromIndices(yIndex: number, xIndex: number) {
+        if (xIndex < 0 || yIndex < 0 || xIndex >= this.numCellsX || yIndex >= this.numCellsY) {
+            return -1;
+        }
+        return this.grid[yIndex][xIndex];
+    }
+}
+
+function clampTo255(x: number) {
+    return x > 255 ? 255 : x;
 }
 
 function createGrid({ width, height }: WidthHeight, cellWidthHeight: WidthHeight): Cell[][] {
