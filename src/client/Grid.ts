@@ -9,6 +9,7 @@ NOT colony
 import globalValues from "./globalValues";
 import Ant from "./Ant";
 import Cell from "./Cell";
+import { PheromoneType } from "./globalEnums";
 
 export default class Grid {
     width: number;
@@ -36,6 +37,7 @@ export default class Grid {
         for (let y = 0; y < this.numCellsY; y++) {
             for (let x = 0; x < this.numCellsX; x++) {
                 const cell = this.grid[y][x];
+
                 // prettier-ignore
                 if (cell.isWall){
 					func(
@@ -50,12 +52,13 @@ export default class Grid {
 					func(
 						cell.x, 
 						cell.y, 
-						(cell.hasAnt() as unknown as number)*255, 
+						clampTo255((cell.hasAnt() as unknown as number)*255+(cell.isNest as unknown as number)*255), 
 						cell.food, 
-						(cell.pheromones[0] as unknown as number), 
-						(cell.pheromones[1] as unknown as number)
+						(cell.getPheromones(PheromoneType.TOHOME) as unknown as number), 
+						(cell.getPheromones(PheromoneType.TOFOOD) as unknown as number)
 					); //!@#!@#!@# hardcoded
 				}
+                cell.reducePheromones();
             }
         }
     }
@@ -76,7 +79,7 @@ export default class Grid {
     getPotentialIndices(x: number, y: number): [number, number] {
         return [Math.floor(x / this.cellWidth), Math.floor(y / this.cellHeight)];
     }
-    getCellFromIndices(yIndex: number, xIndex: number) {
+    getCellFromIndices(xIndex: number, yIndex: number) {
         if (xIndex < 0 || yIndex < 0 || xIndex >= this.numCellsX || yIndex >= this.numCellsY) {
             return -1;
         }
@@ -103,17 +106,32 @@ function createGrid({ width, height }: WidthHeight, cellWidthHeight: WidthHeight
     const cellWidth = cellWidthHeight.width;
     const cellHeight = cellWidthHeight.height;
 
+    const nestX = ~~(width / 2);
+    const nestY = ~~(height / 2);
+    const nestW = 10;
+    const nestH = 10;
+
+    const foodX = nestX + 20;
+    const foodY = nestY + 20;
+    const foodW = 10;
+    const foodH = 10;
+
     const grid: Cell[][] = new Array(numCellsY).fill(0);
     for (let y = 0; y < numCellsY; y++) {
         grid[y] = new Array(numCellsX);
         for (let x = 0; x < numCellsX; x++) {
             const xPos = x * cellWidth + cellWidth * 0.5;
             const yPos = y * cellHeight + cellHeight * 0.5;
+            if (x > nestX && y > nestY && x < nestX + nestW && y < nestH + nestY) {
+                // Optimize by taking out later
 
-            if (x > 500 && y > 600 && x < 510 && y < 610) {
-                grid[y][x] = new Cell(xPos, yPos, 255);
+                grid[y][x] = new Cell(xPos, yPos, 0, true);
             } else {
-                grid[y][x] = new Cell(xPos, yPos, 0);
+                if (x > foodX && y > foodY && x < foodX + foodW && y < foodY + foodH) {
+                    grid[y][x] = new Cell(xPos, yPos, 255, false);
+                } else {
+                    grid[y][x] = new Cell(xPos, yPos, 0, false);
+                }
             }
         }
     }
