@@ -1,16 +1,23 @@
+import { PheromoneType } from "./globalEnums";
+
+const maxPheromones = 2000;
+const normaliseTo255 = 255 / maxPheromones;
+
 export default class Cell {
     x: number;
     y: number;
     food: number; // 0=> 255
-    pheromones: number; // 0 => 255
+    pheromones: number[]; // 0 => 2000
     isWall: boolean;
+    isNest: boolean;
     numOfAnts: number;
-    constructor(x: number, y: number, food: number) {
+    constructor(x: number, y: number, food: number, isNest: boolean) {
         this.x = x;
         this.y = y;
         this.food = food;
-        this.pheromones = 0;
+        this.pheromones = [0, 0];
         this.isWall = false;
+        this.isNest = isNest;
         this.numOfAnts = 0;
     }
     hasAnt() {
@@ -18,8 +25,8 @@ export default class Cell {
     }
     getAnts() {
         const val = this.numOfAnts * 50;
-        if (val > 255) {
-            return 255;
+        if (val > maxPheromones) {
+            return maxPheromones;
         }
         return val;
     }
@@ -33,15 +40,20 @@ export default class Cell {
         this.numOfAnts++;
     }
 
-    addPheromones() {
-        this.pheromones += 1;
-        if (this.pheromones > 255) {
-            this.pheromones = 255;
+    addPheromones(type: PheromoneType, amount: number) {
+        this.pheromones[type] += amount;
+        if (this.pheromones[type] > maxPheromones) {
+            this.pheromones[type] = maxPheromones;
         }
     }
+    getPheromones(type: PheromoneType) {
+        return ~~(this.pheromones[type] * normaliseTo255);
+    }
     reducePheromones() {
-        if (this.pheromones > 0) {
-            this.pheromones--;
+        for (let i = 0; i < this.pheromones.length; i++) {
+            if (this.pheromones[i] > 0) {
+                this.pheromones[i]--;
+            }
         }
     }
     hasFood() {
