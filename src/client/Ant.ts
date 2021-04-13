@@ -1,8 +1,11 @@
 import Grid from "./Grid";
 import Cell from "./Cell";
 import globalValues from "./globalValues";
+import { PheromoneType } from "./globalEnums";
 
 const numOfDirections = 24;
+const diaSizeHalf = globalValues.diaSize * 0.5;
+const initialPStrength = 200;
 
 export default class Ant {
     x: number;
@@ -14,6 +17,7 @@ export default class Ant {
     parentCell: Cell;
     oldX: number;
     oldY: number;
+    pStrenth: number;
     constructor(grid: Grid, { x, y }: Point) {
         this.x = x;
         this.y = y;
@@ -23,6 +27,7 @@ export default class Ant {
         this.dir = Math.random() * 2 * Math.PI; //!@#!@#!@#
         this.speed = globalValues.diaSize;
         this.hasFood = false;
+        this.pStrenth = initialPStrength;
         const parentCell = this.grid.getCell(this.x, this.y);
         if (parentCell === -1) {
             throw new Error("ERROR: you can't spawn ants outside boundary!");
@@ -35,9 +40,15 @@ export default class Ant {
         this.oldX = this.x;
         this.oldY = this.y;
 
-        this.dir += (-2 / 180) * Math.PI + (4 / 180) * Math.PI * Math.random();
-        this.x += this.speed * Math.cos(this.dir);
-        this.y += this.speed * Math.sin(this.dir);
+        // this.dir += (-5 / 180) * Math.PI + (10 / 180) * Math.PI * Math.random();	//!@#!@#
+        const cDir = Math.cos(this.dir);
+        const sDir = Math.sin(this.dir);
+
+        // Find the = cells infront of it to weight turn left/right/straight
+        this.calcTurningAmount(cDir, sDir, this.hasFood);
+
+        this.x += this.speed * cDir;
+        this.y += this.speed * sDir;
 
         // if (Math.random() > 0.9) {
         //     this.dir += 1 + Math.random() * -2;
@@ -77,12 +88,154 @@ export default class Ant {
                     this.hasFood = this.parentCell.hasFood();
                     if (this.hasFood) {
                         this.parentCell.takeFood();
+                        this.pStrenth = initialPStrength;
+                    } else {
+                        this.parentCell.addPheromones(PheromoneType.TOHOME, ~~this.pStrenth);
                     }
+                } else {
+                    this.parentCell.addPheromones(PheromoneType.TOFOOD, ~~this.pStrenth);
+                }
+                if (this.parentCell.isNest) {
+                    if (this.hasFood) {
+                        this.returnedFood();
+                    }
+                    // optimize this later
+                    this.pStrenth = initialPStrength;
                 }
             }
         }
-        this.parentCell.addPheromones();
+        if (this.pStrenth > 0) {
+            this.pStrenth -= 1;
+        }
     }
+    returnedFood() {
+        this.hasFood = false;
+    }
+    calcTurningAmount(cDir: number, sDir: number, hasFood: boolean) {
+        const [leftCell, frontCell, rightCell] = this.findFrontCells(cDir, sDir);
+        // if (leftCell !== -1 || rightCell !== -1) {
+        //     console.log("IT WORKS!");
+        // }
+        // if (rightCell !== -1) {
+        //     rightCell.isNest = true;
+        // }
+        const pheromoneType = hasFood === true ? PheromoneType.TOHOME : PheromoneType.TOFOOD;
+
+        const pheromoneConcentration = getFrontPheromones(
+            leftCell,
+            frontCell,
+            rightCell,
+            pheromoneType
+        );
+
+        const totalPheromone =
+            pheromoneConcentration[0] + pheromoneConcentration[1] + pheromoneConcentration[2];
+
+        // !@#!@#!@#!@#!@#  THIS SHOULD BE TRIGGER BY THE
+        // ant who picked up food
+        // ants who trying to find food when they touch line
+
+        if (Math.random() < 1 / (1 + totalPheromone)) {
+            //!@#!@#!@# hyperparam
+            // Wander
+            this.dir += (-15 / 180) * Math.PI + (30 / 180) * Math.PI * Math.random();
+        } else {
+            // Lots of pheromones, follow A trail
+            // console.log("MEEP");
+            const random = Math.random() * totalPheromone;
+            if (random < pheromoneConcentration[0]) {
+                // console.log("<<<< LEFT");
+                // LEFT
+                // if (leftCell !== -1) {
+                //     this.x = leftCell.x;
+                //     this.y = leftCell.y;
+                // }
+                this.dir -= (5 / 180) * Math.PI;
+            } else if (random > pheromoneConcentration[0] + pheromoneConcentration[1]) {
+                // console.log("RIGHT >>>>");
+                // RIGHT
+                // if (rightCell !== -1) {
+                //     this.x = rightCell.x;
+                //     this.y = rightCell.y;
+                // }
+                this.dir += (5 / 180) * Math.PI;
+            } else {
+                // console.log("MIDDLE");
+                // MIDDLE
+            }
+        }
+    }
+    findFrontCells(cDir: number, sDir: number): Array<Cell | -1> {
+        // Finds the cells infront of the direction the ant is facing
+
+        // WATCH OUT FOR OUT OF GRID OR WALLS or food?
+        // globalValues.diaSize;
+        const frontCellIndices = this.grid.getPotentialIndices(
+            this.parentCell.x + globalValues.diaSize * cDir,
+            this.parentCell.y + globalValues.diaSize * sDir
+        );
+        const diff: [number, number] = [
+            frontCellIndices[0] - (this.parentCell.x - diaSizeHalf),
+            frontCellIndices[1] - (this.parentCell.y - diaSizeHalf),
+        ];
+
+        const hasZeroOnX = diff[0] === 0;
+        const hasZeroOnY = diff[1] === 0;
+        let relativePositions: [number[], number[]] = [
+            [diff[0], diff[1]],
+            [diff[0], diff[1]],
+        ];
+
+        // Find left and right cells relative to front
+        if (hasZeroOnX) {
+            // Has zero 0th index (x)
+            relativePositions[0][0] = 1 * diff[1];
+            relativePositions[1][0] = -1 * diff[1];
+        } else if (hasZeroOnY) {
+            // Has zero 1st index (y)
+            relativePositions[0][1] = -1 * diff[0];
+            relativePositions[1][1] = 1 * diff[0];
+        } else {
+            // Doesn't have zero
+            if (diff[0] * diff[1] === 1) {
+                relativePositions[0][1] = 0;
+                relativePositions[1][0] = 0;
+            } else {
+                relativePositions[0][0] = 0;
+                relativePositions[1][1] = 0;
+            }
+        }
+
+        // Retrive potential cell
+        const frontCell = this.grid.getCellFromIndices(frontCellIndices[0], frontCellIndices[1]);
+        const leftCell = this.grid.getCellFromIndices(
+            frontCellIndices[0] + relativePositions[0][0],
+            frontCellIndices[1] + relativePositions[0][1]
+        );
+        const rightCell = this.grid.getCellFromIndices(
+            frontCellIndices[0] + relativePositions[1][0],
+            frontCellIndices[1] + relativePositions[1][1]
+        );
+
+        return [leftCell, frontCell, rightCell];
+    }
+}
+
+function getFrontPheromones(
+    leftCell: Cell | -1,
+    frontCell: Cell | -1,
+    rightCell: Cell | -1,
+    type: PheromoneType
+): [number, number, number] {
+    return [
+        getSinglePheromone(leftCell, type),
+        getSinglePheromone(frontCell, type),
+        getSinglePheromone(rightCell, type),
+    ];
+}
+
+function getSinglePheromone(cell: Cell | -1, type: PheromoneType) {
+    return cell === -1 ? 0 : cell.getPheromones(type);
 }
 
 const angleXY = [
