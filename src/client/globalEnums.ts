@@ -1,3 +1,15 @@
+/* 
+THIS PROJECT
+*/
+
+enum PheromoneType {
+    TOHOME,
+    TOFOOD,
+}
+
+/* 
+OLD
+*/
 enum Mouse {
     LEFTDOWN = "0",
     LEFTUP = "1",
@@ -16,4 +28,4 @@ enum ButtonEnum {
     RIGHT,
 }
 
-export { Mouse, ActionTypes, ButtonEnum };
+export { Mouse, ActionTypes, ButtonEnum, PheromoneType };
