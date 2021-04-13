@@ -135,3 +135,13 @@ ran = 0.3*3
 ran = 0.6*3
 => 1.8
 => [1]
+
+
+
+
+
+
+
+
+## Interesting
+- created iris by forgetting a this.pStrength >0 condition
