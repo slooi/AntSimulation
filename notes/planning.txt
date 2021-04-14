@@ -145,3 +145,16 @@ ran = 0.6*3
 
 ## Interesting
 - created iris by forgetting a this.pStrength >0 condition
+
+
+
+
+
+
+
+
+
+## How to test my code:
+- make straight line
+- make one ant point to it
+- run code in debugger step through code and make sure ant goes through expected paths
