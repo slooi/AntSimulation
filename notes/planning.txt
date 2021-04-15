@@ -158,3 +158,25 @@ ran = 0.6*3
 - make straight line
 - make one ant point to it
 - run code in debugger step through code and make sure ant goes through expected paths
+
+
+
+
+
+
+## Fix to ant not following line problem:
+- when a pheromone block exists to the left or right record position
+	- If next position is further away from the block you should be turning towards TURN OPPOSITE by x2 amount
+- What even causes this problem in the first place?
+	- You're trying to merge with the lane	
+		- But you turn away too much
+			- Essentially (assuming straight line), ants should only correct themselves enough to merge with line
+				- How can I calculate this threshold?
+
+- BY STAYING ON THE LINE, THE ANTS SHOULD GRADUALLY ADJUST IT'S INTERNAL DIRECTION TO MATCH THE DIRECTION OF THE LINE	(note that this only applies to straight lines - which is what the line(s) will converge to)
+	- Use math.random() to get small and large angle changes! :D
+	- This angle changing should only happen when the ants fall off the path
+
+- Can do two checks per tick or one, which one?
+
+-- AIM, make sure they don't turn AWAY from a STRAIGHT LINE
