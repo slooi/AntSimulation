@@ -9,13 +9,15 @@ const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const game = new Game({ canvas });
 
 window.addEventListener("keydown", (e) => {
+    // Note pheromones dissapear only in render stage
+    // game.speed does NOT make the rander stage run more. So pheromones won't be reduced as much per tick
     if (e.key === "w") {
-        game.speed = 10;
-    }
-});
-
-window.addEventListener("keyup", (e) => {
-    if (e.key === "w") {
-        game.speed = 1;
+        if (game.speed === 1) {
+            game.speed = 100;
+            console.log("FAST FORWARDS!");
+        } else {
+            game.speed = 1;
+            console.log("BACK TO NORMAL");
+        }
     }
 });
