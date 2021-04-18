@@ -180,3 +180,13 @@ ran = 0.6*3
 - Can do two checks per tick or one, which one?
 
 -- AIM, make sure they don't turn AWAY from a STRAIGHT LINE
+
+
+
+Increase the sensing area.
+	- The ants are currently behaving badly because of the fact that their secnsing radius is too small
+		- Ants turn a bit then stop turnning as they can no longer sense the pheromones
+
+What I will be doing:
+	- create three sensing points 2/3 blocks away from the front of the ant
+	- Left and right sensing points will be located 
