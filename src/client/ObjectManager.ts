@@ -12,13 +12,13 @@ export default class ObjectManager {
         this.grid = new Grid(widthHeight);
         this.renderer = renderer;
         this.createAnts(
-            { x: globalValues.canvas.width * 0.5, y: globalValues.canvas.height * 0.5 },
-            50000
-        );
+            { x: globalValues.canvas.width * 0.22, y: globalValues.canvas.height * 0.22 },
+            1000
+        ); //20000
     }
     createAnts(point: Point, num: number) {
         for (let i = 0; i < num; i++) {
-            const ant = new Ant(this.grid, point);
+            const ant = new Ant(this.grid, point, Math.random() * 2 * Math.PI);
             this.ants[i] = ant;
         }
     }
