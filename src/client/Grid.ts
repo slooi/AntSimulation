@@ -52,13 +52,24 @@ export default class Grid {
 					func(
 						cell.x, 
 						cell.y, 
-						clampTo255((cell.hasAnt() as unknown as number)*255+(cell.isNest as unknown as number)*255), 
+						clampTo255((cell.hasAnt() as unknown as number)*255+(cell.isNest as unknown as number)*255),//clampTo255((cell.hasAnt() as unknown as number)*255), //						clampTo255((cell.hasAnt() as unknown as number)*255+(cell.isNest as unknown as number)*255), 
 						cell.food, 
 						(cell.getPheromones(PheromoneType.TOHOME) as unknown as number), 
 						(cell.getPheromones(PheromoneType.TOFOOD) as unknown as number)
 					); //!@#!@#!@# hardcoded
 				}
-                cell.reducePheromones();
+                const pReducedAmount = cell.reducePheromones(); //!@#!@#!@# REMOVE THIS CODE LATER
+                this.dissipate(cell, x, y, pReducedAmount);
+            }
+        }
+    }
+    dissipate(cell: Cell, oX: number, oY: number, pReduced: [number, number]) {
+        for (let y = -1; y < 2; y++) {
+            for (let x = -1; x < 2; x++) {
+                const potenCell = this.getCellFromIndices(oX + x, oY + y);
+                if (potenCell !== -1) {
+                    potenCell.dissipate(pReduced);
+                }
             }
         }
     }
@@ -106,13 +117,13 @@ function createGrid({ width, height }: WidthHeight, cellWidthHeight: WidthHeight
     const cellWidth = cellWidthHeight.width;
     const cellHeight = cellWidthHeight.height;
 
-    const nestX = ~~(width / 2);
-    const nestY = ~~(height / 2);
+    const nestX = width * 0.1;
+    const nestY = height * 0.1;
     const nestW = 10;
     const nestH = 10;
 
-    const foodX = nestX + 20;
-    const foodY = nestY + 20;
+    const foodX = 370;
+    const foodY = 150;
     const foodW = 10;
     const foodH = 10;
 
@@ -133,6 +144,9 @@ function createGrid({ width, height }: WidthHeight, cellWidthHeight: WidthHeight
                     grid[y][x] = new Cell(xPos, yPos, 0, false);
                 }
             }
+            // if (y === ~~(width / 2)) {
+            //     grid[y][x].pheromones[1] = 2000;
+            // }
         }
     }
 

@@ -19,6 +19,9 @@ export default class Cell {
         this.isWall = false;
         this.isNest = isNest;
         this.numOfAnts = 0;
+        if (isNest === true) {
+            console.log(this.x, this.y);
+        }
     }
     hasAnt() {
         return this.numOfAnts > 0 ? true : false;
@@ -49,10 +52,24 @@ export default class Cell {
     getPheromones(type: PheromoneType) {
         return ~~(this.pheromones[type] * normaliseTo255);
     }
-    reducePheromones() {
+    reducePheromones(): [number, number] {
+        const reduceAmounts: [number, number] = [0, 0];
         for (let i = 0; i < this.pheromones.length; i++) {
-            if (this.pheromones[i] > 0) {
-                this.pheromones[i]--;
+            const reduceAmount = 1; //this.pheromones[i] / 1000;
+            this.pheromones[i] -= reduceAmount; //+ 0.01;
+            if (this.pheromones[i] < 0) {
+                this.pheromones[i] = 0;
+            } else {
+                reduceAmounts[i] = reduceAmount;
+            }
+        }
+        return reduceAmounts;
+    }
+    dissipate(pReduced: [number, number]) {
+        for (let i = 0; i < this.pheromones.length; i++) {
+            this.pheromones[i] += pReduced[i] / 10;
+            if (this.pheromones[i] > maxPheromones) {
+                this.pheromones[i] = maxPheromones;
             }
         }
     }
@@ -60,7 +77,7 @@ export default class Cell {
         return this.food > 0;
     }
     takeFood() {
-        this.food -= 5;
+        // this.food -= 5;
         if (this.food < 0) {
             throw new Error("ERROR: Cell somehow has negative food!");
         }
